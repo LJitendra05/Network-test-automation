@@ -1,0 +1,4 @@
+2026-08-26 10:07:11,375 -INFO - Starting ping test for 8.8.8.8
+2026-08-26 10:07:11,469 -INFO - 8.8.8.8 is reachable
+2026-08-26 10:07:11,476 -INFO - Starting ping test for 192.0.2.1
+2026-08-26 10:07:15,061 -INFO - 192.0.2.1 is not reachable

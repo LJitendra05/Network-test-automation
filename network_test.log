@@ -6,3 +6,22 @@
 2026-08-26 10:17:47,082 -INFO - 8.8.8.8 is reachable
 2026-08-26 10:17:47,088 -INFO - Starting ping test for 192.0.2.1
 2026-08-26 10:17:51,053 -INFO - 192.0.2.1 is not reachable
+2026-08-26 11:17:55,920 -INFO - Starting ping test for 8.8.8.8
+2026-08-26 11:17:56,015 -INFO - 8.8.8.8 is reachable
+2026-08-26 11:17:56,027 -INFO - Starting ping test for 192.0.2.1
+2026-08-26 11:18:00,062 -INFO - 192.0.2.1 is not reachable
+2026-08-26 11:27:06,772 -INFO - Starting ping test for 8.8.8.8
+2026-08-26 11:27:06,860 -INFO - 8.8.8.8 is reachable
+2026-08-26 11:27:06,867 -INFO - Starting ping test for 192.0.2.1
+2026-08-26 11:27:10,552 -INFO - 192.0.2.1 is not reachable
+2026-08-26 11:32:56,787 -INFO - Starting ping test for 8.8.8.8
+2026-08-26 11:32:56,876 -INFO - 8.8.8.8 is reachable
+2026-08-26 11:32:56,879 -INFO - Starting ping test for 192.0.2.1
+2026-08-26 11:33:00,564 -INFO - 192.0.2.1 is not reachable
+2026-08-26 11:34:47,670 -INFO - Starting ping test for 8.8.8.8
+2026-08-26 11:34:47,758 -INFO - 8.8.8.8 is reachable
+2026-08-26 11:34:47,764 -INFO - Starting ping test for 192.0.2.1
+2026-08-26 11:34:51,558 -INFO - 192.0.2.1 is not reachable
+2026-08-26 11:34:51,560 -INFO - Starting performance test for 8.8.8.8
+2026-08-26 11:34:55,770 -INFO - 8.8.8.8: sent=5, received=5, lost=0, packet_loss=0.0%
+2026-08-26 11:34:55,770 -INFO - 8.8.8.8: min=55ms, max=55ms, average=55ms

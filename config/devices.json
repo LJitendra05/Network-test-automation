@@ -3,12 +3,16 @@
         {
             "Name":"Device_1",
             "host":"8.8.8.8",
-            "expected_reachable":true
+            "expected_reachable":true,
+            "max_latency":100,
+            "max_packet_loss":0
         },
         {
             "Name":"Device_2",
             "host":"192.0.2.1",
-            "expected_reachable":false
+            "expected_reachable":false,
+            "max_latency":100,
+            "max_packet_loss":0
         }
     ]
 }

@@ -1,6 +1,6 @@
 import subprocess
 import logging
-
+import platform
 # logging.basicConfig(
 #     filename="network_test.log",
 #     level=logging.INFO,
@@ -30,10 +30,50 @@ def ping_host( host):
     return False
 
 def ping_performance(host,count=5):
+    logger.info(f"Starting performance test for {host}") 
+
+    if platform.system() == "Windows":
+        command = ["ping", "-n", str(count), host]
+    else:
+        command = ["ping", "-c", str(count), host]
     result=subprocess.run(
-        ["ping","-n",str(count),host],
+        command,
         capture_output=True,
         text=True
     )
     output=result.stdout
-    return output
+    lines = output.splitlines()
+    packet_line = next(
+        line for line in lines if "Packets:" in line)
+    timing_line = next(
+        line for line in lines if "Minimum =" in line)
+
+    packet_parts = packet_line.split(",")
+    sent = int(packet_parts[0].split("=")[1].strip())
+    received = int(packet_parts[1].split("=")[1].strip())
+    lost = int(packet_parts[2].split("=")[1].split("(")[0].strip())
+    timing_parts = timing_line.split(",")
+    minimum = int(timing_parts[0].split("=")[1].replace("ms", "").strip())
+    maximum = int(timing_parts[1].split("=")[1].replace("ms", "").strip())
+    average = int(timing_parts[2].split("=")[1].replace("ms", "").strip())
+    packet_loss = (lost / sent) * 100
+
+    logger.info(
+        f"{host}: sent={sent}, received={received}, "
+        f"lost={lost}, packet_loss={packet_loss}%"
+    )
+    logger.info(
+        f"{host}: min={minimum}ms, max={maximum}ms, "
+        f"average={average}ms"
+    )
+    
+    return {
+        "host": host,
+        "sent": sent,
+        "received": received,
+        "lost": lost,
+        "packet_loss": packet_loss,
+        "minimum": minimum,
+        "maximum": maximum,
+        "average": average
+    }

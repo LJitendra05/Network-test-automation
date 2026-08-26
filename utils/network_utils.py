@@ -17,9 +17,12 @@ logger.addHandler(file_handler)
 
 def ping_host( host):
     logger.info(f"Starting ping test for {host}")
-
+    if platform.system() == "Windows":
+        command = ["ping", "-n", "1", host]
+    else:
+        command = ["ping", "-c", "1", host]
     results=subprocess.run(
-        ["ping","-n","1",host],
+        command,
         capture_output=True,
         text=True)
     
@@ -41,6 +44,19 @@ def ping_performance(host,count=5):
         capture_output=True,
         text=True
     )
+
+    if result.returncode != 0:
+        logger.error(f"Ping command failed for {host}")
+        return {
+            "host": host,
+            "sent": count,
+            "received": 0,
+            "lost": count,
+            "packet_loss": 100.0,
+            "minimum": None,
+            "maximum": None,
+            "average": None
+        }    
     output=result.stdout
     lines = output.splitlines()
     packet_line = next(

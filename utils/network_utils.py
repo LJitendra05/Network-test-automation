@@ -28,3 +28,13 @@ def ping_host( host):
         return True
     logger.info(f"{host} is not reachable")
     return False
+
+    def ping_performance(host,count=5):
+        result=subprocess.run(
+            ["ping","-n",str(count),host],
+            capture_output=True,
+            text=True
+        )
+        output=result.stdout
+
+        return output

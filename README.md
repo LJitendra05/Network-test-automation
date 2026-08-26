@@ -35,6 +35,7 @@ network-test-automation/
 ├── .gitignore
 ├── requirements.txt
 └── README.md
+```
 ## Technologies
 
 - Python

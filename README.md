@@ -18,6 +18,7 @@ A beginner-friendly Python and pytest-based framework for automating network con
 
 ## Project Structure
 
+```text
 network-test-automation/
 │
 ├── config/
@@ -34,7 +35,6 @@ network-test-automation/
 ├── .gitignore
 ├── requirements.txt
 └── README.md
-
 ## Technologies
 
 - Python

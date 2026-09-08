@@ -4,7 +4,11 @@
 #include <chrono>
 #include <vector>
 using namespace std;
-int main() {
+int main(int argc, char* argv[]) {
+    int testCount = 5;
+
+    if (argc > 1) testCount = stoi(argv[1]);
+
 
     WSADATA wsaData;
 
@@ -23,10 +27,10 @@ int main() {
     if (client.connectToServer("127.0.0.1", 8080)) {
         cout << "Connected to server!\n";
 
-        const int TEST_COUNT = 5;
+        // const int TEST_COUNT = 5;
         vector<long long> rttValues;
 
-        for (int i = 1; i <= TEST_COUNT; i++) {
+        for (int i = 1; i <= testCount; i++) {
 
             auto start =chrono::high_resolution_clock::now();
             client.sendData("Hello Server");

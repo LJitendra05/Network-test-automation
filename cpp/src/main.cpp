@@ -20,6 +20,16 @@ int main() {
 
     if (client.connectToServer("127.0.0.1", 8080)) {
         std::cout << "Connected to server!\n";
+
+        client.sendData("Hello Server");
+
+        std::string response;
+
+        if (client.receiveData(response)) {
+            std::cout << "Server response: "
+                      << response
+                      << "\n";
+        }
     }
 
     client.disconnect();

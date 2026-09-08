@@ -57,6 +57,62 @@ bool TcpClient::connectToServer(
     return true;
 }
 
+bool TcpClient::sendData(const std::string& message) {
+    int bytesSent = send(
+        clientSocket,
+        message.c_str(),
+        static_cast<int>(message.size()),
+        0
+    );
+
+    if (bytesSent == SOCKET_ERROR) {
+        int errorCode = WSAGetLastError();
+
+        std::cerr << "Send failed\n";
+        std::cerr << "Error code: " << errorCode << "\n";
+
+        return false;
+    }
+
+    std::cout << "Bytes sent: " << bytesSent << "\n";
+
+    return true;
+}
+
+bool TcpClient::receiveData(std::string& response) {
+    char buffer[1024];
+
+    int bytesReceived = recv(
+        clientSocket,
+        buffer,
+        sizeof(buffer) - 1,
+        0
+    );
+
+    if (bytesReceived == SOCKET_ERROR) {
+        int errorCode = WSAGetLastError();
+
+        std::cerr << "Receive failed\n";
+        std::cerr << "Error code: " << errorCode << "\n";
+
+        return false;
+    }
+
+    if (bytesReceived == 0) {
+        std::cerr << "Server closed the connection\n";
+        return false;
+    }
+
+    buffer[bytesReceived] = '\0';
+
+    response = buffer;
+
+    std::cout << "Bytes received: "
+              << bytesReceived
+              << "\n";
+
+    return true;
+}
 void TcpClient::disconnect() {
 
     if (clientSocket != INVALID_SOCKET) {

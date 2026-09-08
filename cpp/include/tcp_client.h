@@ -16,6 +16,9 @@ public:
         int port
     );
 
+    bool sendData(const std::string& message);
+    bool receiveData(std::string& response);
+    
     void disconnect();
 };
 

@@ -24,7 +24,7 @@ int main() {
         cout << "Connected to server!\n";
 
         const int TEST_COUNT = 5;
-        vector<double> rttValues;
+        vector<long long> rttValues;
 
         for (int i = 1; i <= TEST_COUNT; i++) {
 
@@ -34,28 +34,29 @@ int main() {
             if (client.receiveData(response)) {
                 auto end =chrono::high_resolution_clock::now();
                 auto duration =chrono::duration_cast<std::chrono::microseconds>(end - start);
-                double rtt =duration.count() / 1000.0;
-                rttValues.push_back(rtt);
-                cout << "Test "<< i<< " RTT: "<< rtt<< " ms\n";
+                long long rttMicroseconds =duration.count();
+                rttValues.push_back(rttMicroseconds);
+                cout << "Test "<< i<< " RTT: "<< rttMicroseconds
+                                            << " us ("<< rttMicroseconds / 1000.0<< " ms)\n";
             }
         }
         if (!rttValues.empty()) {
-            double minimum =rttValues[0];
-            double maximum =rttValues[0];
-            double total = 0.0;
+            long long minimum =rttValues[0];
+            long long maximum =rttValues[0];
+            long long total = 0;
 
-            for (double rtt : rttValues) {
+            for (long long rtt : rttValues) {
                 if (rtt < minimum) minimum = rtt;
                 
                 if (rtt > maximum) maximum = rtt;
                 
                 total += rtt;
             }
-            double average =total / rttValues.size();
+            double average =static_cast<double>(total) / rttValues.size();
             cout << "\n--- RTT Summary ---\n";
-            cout << "Minimum RTT: "<< minimum<< " ms\n";
-            cout << "Maximum RTT: "<< maximum<< " ms\n";
-            cout << "Average RTT: "<< average<< " ms\n";
+            cout << "Minimum RTT: "<< minimum<< " us ("<< minimum / 1000.0<< " ms)\n";
+            cout << "Maximum RTT: "<< maximum<< " us ("<< maximum / 1000.0<< " ms)\n";
+            cout << "Average RTT: "<< average<< " us ("<< average / 1000.0<< " ms)\n";
 }
     }
 

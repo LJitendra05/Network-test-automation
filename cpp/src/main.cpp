@@ -21,18 +21,26 @@ int main() {
 
     if (client.connectToServer("127.0.0.1", 8080)) {
         std::cout << "Connected to server!\n";
-        auto start = std::chrono::high_resolution_clock::now();
+
+        const int TEST_COUNT = 5;
+
+    for (int i = 1; i <= TEST_COUNT; i++) {
+
+        auto start =std::chrono::high_resolution_clock::now();
+
         client.sendData("Hello Server");
 
         std::string response;
-        
-        if (client.receiveData(response)) {
-            auto end = std::chrono::high_resolution_clock::now();
-            auto duration =
-                        std::chrono::duration_cast<std::chrono::microseconds>(end - start);
-            std::cout << "Server response: "<< response<< "\n";
 
-            std::cout << "Round-trip time: "<< duration.count() / 1000.0<< " ms\n";
+        if (client.receiveData(response)) {
+
+            auto end =std::chrono::high_resolution_clock::now();
+
+            auto duration =std::chrono::duration_cast<std::chrono::microseconds>(end - start);
+
+            double rtt =duration.count() / 1000.0;
+            std::cout << "Test "<< i<< " RTT: "<< rtt<< " ms\n";
+            }
         }
     }
 

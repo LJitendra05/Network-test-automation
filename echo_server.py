@@ -11,11 +11,12 @@ client, address = server.accept()
 
 print("Client connected:", address)
 
-data = client.recv(1024)
-
-print("Received:", data.decode())
-
-client.sendall(data)
-
+while True:
+    data = client.recv(1024)
+    if not data:
+        break
+    print("Received:", data.decode())
+    client.sendall(data)
 client.close()
+
 server.close()

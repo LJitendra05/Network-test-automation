@@ -7,7 +7,24 @@ using namespace std;
 int main(int argc, char* argv[]) {
     int testCount = 5;
 
-    if (argc > 1) testCount = stoi(argv[1]);
+    if (argc > 1) {
+        try {
+            testCount = stoi(argv[1]);
+        }
+        catch (const std::exception&) {
+            cerr << "Invalid test count. "
+                 << "Please provide a positive integer.\n";
+        
+            return 1;
+        }
+    
+        if (testCount <= 0) {
+            cerr << "Invalid test count. "
+                 << "Test count must be greater than 0.\n";
+        
+            return 1;
+        }
+    }
 
 
     WSADATA wsaData;

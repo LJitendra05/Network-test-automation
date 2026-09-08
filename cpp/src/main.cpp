@@ -1,6 +1,7 @@
 #include <iostream>
 #include <winsock2.h>
 #include "tcp_client.h"
+#include <chrono>
 
 int main() {
 
@@ -20,15 +21,18 @@ int main() {
 
     if (client.connectToServer("127.0.0.1", 8080)) {
         std::cout << "Connected to server!\n";
-
+        auto start = std::chrono::high_resolution_clock::now();
         client.sendData("Hello Server");
 
         std::string response;
-
+        
         if (client.receiveData(response)) {
-            std::cout << "Server response: "
-                      << response
-                      << "\n";
+            auto end = std::chrono::high_resolution_clock::now();
+            auto duration =
+                        std::chrono::duration_cast<std::chrono::microseconds>(end - start);
+            std::cout << "Server response: "<< response<< "\n";
+
+            std::cout << "Round-trip time: "<< duration.count() / 1000.0<< " ms\n";
         }
     }
 

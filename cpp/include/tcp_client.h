@@ -3,6 +3,7 @@
 
 #include <winsock2.h>
 #include <string>
+using namespace std;
 
 class TcpClient {
 private:
@@ -16,9 +17,9 @@ public:
         int port
     );
 
-    bool sendData(const std::string& message);
-    bool receiveData(std::string& response);
-    
+    bool sendData(const string& message);
+    bool receiveData(string& response);
+
     void disconnect();
 };
 

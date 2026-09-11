@@ -22,12 +22,33 @@ int main(int argc, char* argv[]) {
             return 1;
         }
     }
-    string message = "Hello Server";
+    
+    int payloadSize = 12;
     if (argc > 2) {
-        message = argv[2];
-    }
+        try {
+            payloadSize = stoi(argv[2]);
+        }
+        catch (const std::exception&) {
+            cerr << "Invalid payload size. "
+            << "Please provide a positive integer.\n";
+            
+            return 1;
+        }
+        
+        if (payloadSize <= 0) {
+            cerr << "Invalid payload size. "
+            << "Payload size must be greater than 0.\n";
+            
+            return 1;
+        }
+    }    
+    // string message = "Hello Server";
+    // if (argc > 2) {
+    //     message = argv[2];
+    // }
+    string message(payloadSize, 'A');
     cout << "Test count: " << testCount << "\n";
-    cout << "Message: " << message << "\n";
+    cout << "Payload size: " << payloadSize << " bytes\n";
 
     WSADATA wsaData;
     int result = WSAStartup(

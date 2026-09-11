@@ -14,21 +14,22 @@ int main(int argc, char* argv[]) {
         catch (const std::exception&) {
             cerr << "Invalid test count. "
                  << "Please provide a positive integer.\n";
-        
             return 1;
         }
-    
         if (testCount <= 0) {
             cerr << "Invalid test count. "
                  << "Test count must be greater than 0.\n";
-        
             return 1;
         }
     }
-
+    string message = "Hello Server";
+    if (argc > 2) {
+        message = argv[2];
+    }
+    cout << "Test count: " << testCount << "\n";
+    cout << "Message: " << message << "\n";
 
     WSADATA wsaData;
-
     int result = WSAStartup(
         MAKEWORD(2, 2),
         &wsaData
@@ -50,7 +51,7 @@ int main(int argc, char* argv[]) {
         for (int i = 1; i <= testCount; i++) {
 
             auto start =chrono::high_resolution_clock::now();
-            client.sendData("Hello Server");
+            client.sendData(message);
             string response;
             if (client.receiveData(response)) {
                 auto end =chrono::high_resolution_clock::now();

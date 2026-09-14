@@ -1,0 +1,7 @@
+{
+    "test_count": 3,
+    "payload_size": 100,
+    "server_ip": "127.0.0.1",
+    "server_port": 8080,
+    "max_average_rtt_us": 5000
+}

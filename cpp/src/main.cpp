@@ -87,21 +87,44 @@ int main(int argc, char* argv[]) {
 
     if (client.connectToServer(serverIp, serverPort)) {
         cout << "Connected to server!\n";
-
         vector<long long> rttValues;
+        int passedTests = 0;
+        int failedTests = 0;
 
         for (int i = 1; i <= testCount; i++) {
 
             auto start =chrono::high_resolution_clock::now();
-            client.sendData(message);
-            string response;
-            if (client.receiveData(response)) {
-                auto end =chrono::high_resolution_clock::now();
-                auto duration =chrono::duration_cast<std::chrono::microseconds>(end - start);
-                long long rttMicroseconds =duration.count();
-                rttValues.push_back(rttMicroseconds);
-                cout << "Test "<< i<< " RTT: "<< rttMicroseconds
-                                            << " us ("<< rttMicroseconds / 1000.0<< " ms)\n";
+            if (client.sendData(message)) {
+                string response;
+                if (client.receiveData(response)) {
+                    auto end = chrono::high_resolution_clock::now();
+                    auto duration =
+                        chrono::duration_cast<std::chrono::microseconds>(
+                            end - start
+                        );
+                    long long rttMicroseconds = duration.count();
+                    rttValues.push_back(rttMicroseconds);
+                    if (response == message) {
+                        passedTests++;
+                        cout << "Test " << i << ": PASS\n";
+                    } else {
+                        failedTests++;
+                        cout << "Test " << i << ": FAIL - Response mismatch\n";
+                    }
+                    cout << "RTT: "
+                         << rttMicroseconds
+                         << " us ("
+                         << rttMicroseconds / 1000.0
+                         << " ms)\n";
+                }
+                else {
+                    failedTests++;
+                    cout << "Test " << i << ": FAIL - Receive failed\n";
+                }
+            }
+            else {
+                failedTests++;
+                cout << "Test " << i << ": FAIL - Send failed\n";
             }
         }
         if (!rttValues.empty()) {
@@ -121,6 +144,15 @@ int main(int argc, char* argv[]) {
             cout << "Minimum RTT: "<< minimum<< " us ("<< minimum / 1000.0<< " ms)\n";
             cout << "Maximum RTT: "<< maximum<< " us ("<< maximum / 1000.0<< " ms)\n";
             cout << "Average RTT: "<< average<< " us ("<< average / 1000.0<< " ms)\n";
+
+            cout << "\n--- Test Summary ---\n";
+            cout << "Passed: " << passedTests << "\n";
+            cout << "Failed: " << failedTests << "\n";
+            if (failedTests == 0 && passedTests > 0) {
+                cout << "Result: PASS\n";
+            } else {
+                cout << "Result: FAIL\n";
+            }
 }
     }
 

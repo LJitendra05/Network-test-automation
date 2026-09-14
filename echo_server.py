@@ -42,5 +42,7 @@ while True:
             )
             client.sendall(header)
             client.sendall(data)
+    except ConnectionResetError:
+        print("Client disconnected.")
     finally:
         client.close()

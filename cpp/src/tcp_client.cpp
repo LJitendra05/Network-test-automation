@@ -70,7 +70,7 @@ bool TcpClient::connectToServer(
     }
 
     auto duration =
-    chrono::duration_cast<std::chrono::microseconds>(
+    chrono::duration_cast<chrono::microseconds>(
         end - start
     );
 
@@ -82,62 +82,111 @@ bool TcpClient::connectToServer(
     return true;
 }
 
-bool TcpClient::sendData(const std::string& message) {
-    int bytesSent = send(
-        clientSocket,
-        message.c_str(),
-        static_cast<int>(message.size()),
-        0
-    );
+bool TcpClient::sendAll(const char* data,int length) {
+    int totalSent = 0;
+    while (totalSent < length) {
+        int bytesSent = send(
+            clientSocket,
+            data + totalSent,
+            length - totalSent,
+            0
+        );
+        if (bytesSent == SOCKET_ERROR) {
+            int errorCode = WSAGetLastError();
+            cerr << "Send failed\n";
+            cerr << "Error code: "
+                 << errorCode
+                 << "\n";
+            return false;
+        }
+        if (bytesSent == 0) {
+            cerr << "Send returned 0 bytes\n";
+            return false;
+        }
+        totalSent += bytesSent;
+    }
+    return true;
+}
 
-    if (bytesSent == SOCKET_ERROR) {
-        int errorCode = WSAGetLastError();
-
-        cerr << "Send failed\n";
-        cerr << "Error code: " << errorCode << "\n";
-
+bool TcpClient::sendData(const string& message) {
+    int messageSize =
+        static_cast<int>(message.size());
+    int networkSize =
+        htonl(messageSize);
+    if (!sendAll(
+            reinterpret_cast<const char*>(&networkSize),
+            sizeof(networkSize)
+        )) {
         return false;
     }
+    if (!sendAll(
+            message.c_str(),
+            messageSize
+        )) {
+        return false;
+    }
+    cout << "Bytes sent: "
+         << messageSize
+         << "\n";
+    return true;
+}
 
-    cout << "Bytes sent: " << bytesSent << "\n";
-
+bool TcpClient::receiveAll(char* data,int length) {
+    int totalReceived = 0;
+    while (totalReceived < length) {
+        int bytesReceived = recv(
+            clientSocket,
+            data + totalReceived,
+            length - totalReceived,
+            0
+        );
+        if (bytesReceived == SOCKET_ERROR) {
+            int errorCode = WSAGetLastError();
+            cerr << "Receive failed\n";
+            cerr << "Error code: "
+                 << errorCode
+                 << "\n";
+            return false;
+        }
+        if (bytesReceived == 0) {
+            cerr << "Server closed the connection\n";
+            return false;
+        }
+        totalReceived += bytesReceived;
+    }
     return true;
 }
 
 bool TcpClient::receiveData(string& response) {
-    char buffer[1024];
-
-    int bytesReceived = recv(
-        clientSocket,
-        buffer,
-        sizeof(buffer) - 1,
-        0
-    );
-
-    if (bytesReceived == SOCKET_ERROR) {
-        int errorCode = WSAGetLastError();
-
-        cerr << "Receive failed\n";
-        cerr << "Error code: " << errorCode << "\n";
-
+    int networkSize;
+    if (!receiveAll(
+            reinterpret_cast<char*>(&networkSize),
+            sizeof(networkSize)
+        )) {
         return false;
     }
-
-    if (bytesReceived == 0) {
-        cerr << "Server closed the connection\n";
+    int messageSize = ntohl(networkSize);
+    if (messageSize < 0 || messageSize > 100000000) {
+        cerr << "Invalid message size: "
+             << messageSize
+             << "\n";
         return false;
     }
-
-    buffer[bytesReceived] = '\0';
-
-    response = buffer;
-
+    response.resize(messageSize);
+    if (messageSize > 0) {
+        if (!receiveAll(
+                &response[0],
+                messageSize
+            )) {
+            return false;
+        }
+    }
     cout << "Bytes received: "
-              << bytesReceived
-              << "\n";
-
+         << messageSize
+         << "\n";
     return true;
 }
+
 void TcpClient::disconnect() {
 
     if (clientSocket != INVALID_SOCKET) {

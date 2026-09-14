@@ -11,13 +11,15 @@ private:
 
 public:
     TcpClient();
-
-    bool connectToServer(
-        const std::string& ip,
-        int port
-    );
+    
+    bool connectToServer(const string& ip,int port);
+    
+    bool sendAll(const char* data, int length);
 
     bool sendData(const string& message);
+
+    bool receiveAll(char* data,int length);
+
     bool receiveData(string& response);
 
     void disconnect();

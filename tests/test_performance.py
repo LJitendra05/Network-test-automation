@@ -68,5 +68,4 @@ def test_cpp_tcp_engine():
 
     assert passed == tcp_config["test_count"]
     assert failed == 0
-
     assert average_rtt <= tcp_config["max_average_rtt_us"]

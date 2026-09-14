@@ -82,3 +82,10 @@
 2026-09-14 23:55:56,046 -INFO - Starting performance test for 8.8.8.8
 2026-09-14 23:56:00,135 -INFO - 8.8.8.8: sent=5, received=5, lost=0, packet_loss=0.0%
 2026-09-14 23:56:00,135 -INFO - 8.8.8.8: min=40ms, max=51ms, average=43ms
+2026-09-15 00:15:32,232 -INFO - Starting ping test for 8.8.8.8
+2026-09-15 00:15:32,580 -INFO - 8.8.8.8 is reachable
+2026-09-15 00:15:32,583 -INFO - Starting ping test for 192.0.2.1
+2026-09-15 00:15:36,545 -INFO - 192.0.2.1 is not reachable
+2026-09-15 00:15:36,548 -INFO - Starting performance test for 8.8.8.8
+2026-09-15 00:15:40,646 -INFO - 8.8.8.8: sent=5, received=5, lost=0, packet_loss=0.0%
+2026-09-15 00:15:40,647 -INFO - 8.8.8.8: min=41ms, max=46ms, average=43ms

@@ -26,7 +26,7 @@ def test_performance(devices):
     assert result['packet_loss'] <= devices["max_packet_loss"]
     assert result['average'] <= devices["max_latency"]
 
-def test_cpp_tcp_engine():
+def test_cpp_tcp_engine(echo_server):
     result = subprocess.run(
         [
             ".\\cpp\\bin\\network_engine.exe",

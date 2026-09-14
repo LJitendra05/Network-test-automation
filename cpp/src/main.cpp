@@ -84,49 +84,50 @@ int main(int argc, char* argv[]) {
     }
 
     TcpClient client;
-
-    if (client.connectToServer(serverIp, serverPort)) {
-        cout << "Connected to server!\n";
-        vector<long long> rttValues;
-        int passedTests = 0;
-        int failedTests = 0;
-
-        for (int i = 1; i <= testCount; i++) {
-
-            auto start =chrono::high_resolution_clock::now();
-            if (client.sendData(message)) {
-                string response;
-                if (client.receiveData(response)) {
-                    auto end = chrono::high_resolution_clock::now();
-                    auto duration =
-                        chrono::duration_cast<std::chrono::microseconds>(
-                            end - start
-                        );
-                    long long rttMicroseconds = duration.count();
-                    rttValues.push_back(rttMicroseconds);
-                    if (response == message) {
-                        passedTests++;
-                        cout << "Test " << i << ": PASS\n";
-                    } else {
-                        failedTests++;
-                        cout << "Test " << i << ": FAIL - Response mismatch\n";
-                    }
-                    cout << "RTT: "
-                         << rttMicroseconds
-                         << " us ("
-                         << rttMicroseconds / 1000.0
-                         << " ms)\n";
-                }
-                else {
+    if (!client.connectToServer(serverIp, serverPort)) {
+        client.disconnect();
+        WSACleanup();
+        return 1;
+    }
+    cout << "Connected to server!\n";
+    vector<long long> rttValues;
+    int passedTests = 0;
+    int failedTests = 0;
+    for (int i = 1; i <= testCount; i++) {
+        auto start =chrono::high_resolution_clock::now();
+        if (client.sendData(message)) {
+            string response;
+            if (client.receiveData(response)) {
+                auto end = chrono::high_resolution_clock::now();
+                auto duration =
+                    chrono::duration_cast<std::chrono::microseconds>(
+                        end - start
+                    );
+                long long rttMicroseconds = duration.count();
+                rttValues.push_back(rttMicroseconds);
+                if (response == message) {
+                    passedTests++;
+                    cout << "Test " << i << ": PASS\n";
+                } else {
                     failedTests++;
-                    cout << "Test " << i << ": FAIL - Receive failed\n";
+                    cout << "Test " << i << ": FAIL - Response mismatch\n";
                 }
+                cout << "RTT: "
+                     << rttMicroseconds
+                     << " us ("
+                     << rttMicroseconds / 1000.0
+                     << " ms)\n";
             }
             else {
                 failedTests++;
-                cout << "Test " << i << ": FAIL - Send failed\n";
+                cout << "Test " << i << ": FAIL - Receive failed\n";
             }
         }
+        else {
+            failedTests++;
+            cout << "Test " << i << ": FAIL - Send failed\n";
+        }
+    }
         if (!rttValues.empty()) {
             long long minimum =rttValues[0];
             long long maximum =rttValues[0];
@@ -153,8 +154,8 @@ int main(int argc, char* argv[]) {
             } else {
                 cout << "Result: FAIL\n";
             }
-}
-    }
+        }   
+    
 
     client.disconnect();
 

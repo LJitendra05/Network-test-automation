@@ -4,6 +4,26 @@
 #include <chrono>
 using namespace std;
 
+string getSocketErrorMessage(int errorCode) {
+
+    switch (errorCode) {
+
+        case WSAECONNREFUSED:
+            return "Connection refused";
+
+        case WSAETIMEDOUT:
+            return "Connection timed out";
+
+        case WSAEHOSTUNREACH:
+            return "Host unreachable";
+
+        case WSAENETUNREACH:
+            return "Network unreachable";
+
+        default:
+            return "Unknown socket error";
+    }
+}
 TcpClient::TcpClient() {
     clientSocket = INVALID_SOCKET;
 }
@@ -40,6 +60,10 @@ bool TcpClient::connectToServer(
         int errorCode = WSAGetLastError();
         cerr << "TCP connection failed\n";
         cerr << "Error code: " << errorCode << "\n";
+        cerr << "Reason: "
+             << getSocketErrorMessage(errorCode)
+             << "\n";
+        cerr << "Target: " << ip << ":" << port << "\n";
         closesocket(clientSocket);
         clientSocket = INVALID_SOCKET;
         return false;

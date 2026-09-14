@@ -75,9 +75,11 @@ bool TcpClient::connectToServer(
     );
 
     cout << "TCP connection successful\n";
-    cout << "Connection time: "
-          << duration.count() / 1000.0
-          << " ms\n";
+    cout << "Connection time: "<< duration.count() / 1000.0<< " ms\n";
+
+    int timeoutMs = 3000;
+    setsockopt(clientSocket,SOL_SOCKET,SO_RCVTIMEO,
+        reinterpret_cast<const char*>(&timeoutMs),sizeof(timeoutMs));
 
     return true;
 }
@@ -142,10 +144,14 @@ bool TcpClient::receiveAll(char* data,int length) {
         );
         if (bytesReceived == SOCKET_ERROR) {
             int errorCode = WSAGetLastError();
-            cerr << "Receive failed\n";
-            cerr << "Error code: "
-                 << errorCode
-                 << "\n";
+            if (errorCode == WSAETIMEDOUT) {
+                cerr << "Receive timeout\n";
+            } else {
+                cerr << "Receive failed\n";
+                cerr << "Error code: "
+                     << errorCode
+                     << "\n";
+            }
             return false;
         }
         if (bytesReceived == 0) {

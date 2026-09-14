@@ -42,14 +42,36 @@ int main(int argc, char* argv[]) {
             return 1;
         }
     }    
-    // string message = "Hello Server";
-    // if (argc > 2) {
-    //     message = argv[2];
-    // }
+
+    string serverIp = "127.0.0.1";
+    int serverPort = 8080;
+    if (argc > 3) {
+        serverIp = argv[3];
+    }
+    if (argc > 4) {
+        try {
+            serverPort = stoi(argv[4]);
+        }
+        catch (const std::exception&) {
+            cerr << "Invalid port. "
+                 << "Please provide a valid port number.\n";
+                 
+                 return 1;
+                }
+
+        if (serverPort < 1 || serverPort > 65535) {
+            cerr << "Invalid port. "
+            << "Port must be between 1 and 65535.\n";
+            
+            return 1;
+        }
+    }
+
     string message(payloadSize, 'A');
     cout << "Test count: " << testCount << "\n";
     cout << "Payload size: " << payloadSize << " bytes\n";
-
+    cout << "Server: " << serverIp << ":" << serverPort << "\n";
+    
     WSADATA wsaData;
     int result = WSAStartup(
         MAKEWORD(2, 2),
@@ -63,10 +85,9 @@ int main(int argc, char* argv[]) {
 
     TcpClient client;
 
-    if (client.connectToServer("127.0.0.1", 8080)) {
+    if (client.connectToServer(serverIp, serverPort)) {
         cout << "Connected to server!\n";
 
-        // const int TEST_COUNT = 5;
         vector<long long> rttValues;
 
         for (int i = 1; i <= testCount; i++) {
